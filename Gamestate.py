@@ -8,7 +8,7 @@ DEFAULT_BOARD_SIZE = 6
 class GameState:
     def __init__(self, rows=DEFAULT_ROWS, columns=DEFAULT_COLUMNS, board=None, done=False):
         self.__player = 0
-        if  board is None:
+        if board is None:
             board = np.zeros((rows, columns))
         self.__board = board
         self.__turn = 0
@@ -16,12 +16,21 @@ class GameState:
         self.__rows = rows
         self.__cols = columns
         self.__last_added = [rows] * columns
+        self.__winner = 0
+        self.__winner_cords = []
+
+    @property
+    def winner_coords(self):
+        return self.__winner_cords
+    @property
+    def winner(self):
+        return self.__winner
+    @property
+    def is_win(self):
+        return self.__winner != 0
 
     @property
     def done(self):
-        """
-        :return:
-        """
         return self.__done
 
     @property
@@ -35,12 +44,13 @@ class GameState:
     def get_legal_actions(self, agent_index):
         return [col for col in range(len(self.__last_added)) if self.__last_added[col] != 0]
 
-    def move(self, col,turn):
+    def move(self, col, turn):
         row = self.__last_added[col] - 1
         # TODO: check invalid human case
         self.__board[row][col] = turn
-        if self.check_win((row,col)):
+        if self.check_win((row, col)):
             self.__done = True
+            self.__winner = turn
             return row, col
         if self._is_full:
             self.__done = True
@@ -50,7 +60,7 @@ class GameState:
 
     def generate_successor(self, col, turn):
         successor = GameState(rows=self.__rows, columns=self.__cols, board=self.__board.copy(),
-                               done=self.__done)
+                              done=self.__done)
         successor.move(col, turn)
         return successor
 
@@ -65,6 +75,10 @@ class GameState:
             if self.valid_coordinate((row + 3 * ind1, col + 3 * ind2)):
                 if self.__board[row, col] == self.__board[row + ind1, col + ind2] == \
                         self.__board[row + 2 * ind1, col + 2 * ind2] == self.__board[row + 3 * ind1, col + 3 * ind2]:
+                    self.__winner_cords = [(row, col),
+                                           (row + ind1, col + ind2),
+                                           (row + 2 * ind1, col + 2 * ind2),
+                                           (row + 3 * ind1, col + 3 * ind2)]
                     return True
         return False
 
