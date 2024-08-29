@@ -1,6 +1,5 @@
 import numpy as np
 import abc
-import util
 from enum import Enum
 
 
@@ -107,8 +106,8 @@ class MultiAgentSearchAgent(Agent):
     is another abstract class.
     """
 
-    def __init__(self, evaluation_function='scoreEvaluationFunction', depth=2):
-        self.evaluation_function = util.lookup(evaluation_function, globals())
+    def __init__(self, evaluation_function, depth=2):
+        self.evaluation_function = evaluation_function
         self.depth = depth
 
     @abc.abstractmethod
@@ -256,53 +255,3 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         return action
 
 
-
-
-def better_evaluation_function(game_state):
-    """
-    Design a better evaluation function here.
-
-    The evaluation function takes in the current GameState and returns a number, where higher numbers are better.
-    """
-
-
-    empty_cells_weight =0.1
-    score_weight = 1.1
-    smoothness_weight = -1.06
-    corner_weight = 0.5
-
-    empty_cells = (game_state.board == 0).sum()
-    score = game_state.score
-    smoothness = get_smoothness(game_state)
-    corner_score = get_corner_score(game_state)
-    evaluation = (
-                    empty_cells_weight * empty_cells +
-                   score_weight * score+
-                  smoothness_weight * smoothness +
-                  corner_weight * corner_score)
-    return   evaluation
-
-def get_smoothness(game_state):
-    """
-    Calculate the smoothness of the board.
-    Smoothness measures how similar adjacent tiles are in value.
-    """
-    board = game_state.board
-
-    row_diff = np.abs(board[:, :-1] - board[:, 1:])
-    col_diff = np.abs(board[:-1, :] - board[1:, :])
-
-    diff = np.sum(row_diff) + np.sum(col_diff)
-
-    return diff
-
-
-def get_corner_score(game_state):
-    """
-    Calculate a score based on the values in the corners.
-    """
-    board = game_state.board
-    # return np.sum(board[0, :] )+ np.sum(board[:, -1]) + np.sum(board[-1, :]) + np.sum(board[:, 0])
-    return board[0,0] + board[0,-1] + board[-1,0] + board[-1,-1]
-# Abbreviation
-better = better_evaluation_function

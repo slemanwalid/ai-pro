@@ -17,28 +17,8 @@ class Action(Enum):
 OpponentAction = namedtuple('OpponentAction', ['row', 'column', 'value'])
 
 
-class Agent(object):
-    def __init__(self):
-        super(Agent, self).__init__()
-
-    @abc.abstractmethod
-    def get_action(self, game_state):
-        return
-
-    def stop_running(self):
-        pass
 
 
-class RandomOpponentAgent(Agent):
-    FOUR_VS_TWO_PROB = 0.1
-
-    def get_action(self, game_state):
-        empty_tiles = game_state.get_empty_tiles()
-        tile_index = np.random.choice(empty_tiles[0].size)
-        value = 2
-        if np.random.uniform() <= RandomOpponentAgent.FOUR_VS_TWO_PROB:
-            value = 4
-        return OpponentAction(row=empty_tiles[0][tile_index], column=empty_tiles[1][tile_index], value=value)
 
 
 class Game(object):
@@ -67,12 +47,15 @@ class Game(object):
         while not self._state.done and not self._should_quit:
             if self.sleep_between_actions:
                 time.sleep(1)
+
             self.display.mainloop_iteration()
+
             action = self.agent.get_action(self._state)
-            if action == Action.STOP:
-                return
-            self._state.apply_action(action)
+            cor1 = self._state.move(action, 1)
+            self.display.update_state(cor1, 1)
+
+            # self.display.mainloop_iteration()
             opponent_action = self.opponent_agent.get_action(self._state)
-            self._state.apply_opponent_action(opponent_action)
-            self.display.update_state(self._state, action, opponent_action)
-        return self._state.score, self._state.max_tile
+            cor2 = self._state.move(opponent_action, 2)
+            self.display.update_state(cor2, 2)
+        # return self._state.score, self._state.max_tile
