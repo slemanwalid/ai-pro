@@ -5,6 +5,7 @@ import os
 import Heuristics
 import graphics_display
 import multiagents
+from SummaryDisplay import SummaryDisplay
 from game import Game
 from Gamestate import GameState
 
@@ -42,9 +43,8 @@ class KeyboardAgent(multiagents.Agent):
 
 
     def listener(self, tk_event=None, *args, **kw):
-        col = tk_event.x//100
-        print(col, tk_event.x)
-        self._move = col
+
+        self._move = tk_event
 
 
 class GameRunner(object):
@@ -55,12 +55,13 @@ class GameRunner(object):
         self.human_agent = agent1 is None
 
         if display is None:
-            display = graphics_display.GabrieleCirulli2048GraphicsDisplay(self.new_game, self.quit_game, self.human_agent)
+            display = graphics_display.FourInARow(self.new_game, self.quit_game,
+                                                  self.human_agent)
 
         if agent1 is None:
             agent1 = KeyboardAgent(display)
         if agent2 is None:
-            agent2= KeyboardAgent(display)
+            agent2= agent1
         self.display = display
         self._agent1 = agent1
         self._agent2 = agent2
@@ -96,7 +97,7 @@ def main():
     agents = ['KeyboardAgent', 'ReflexAgent', 'MinmaxAgent', 'AlphaBetaAgent', 'ExpectimaxAgent']
     parser.add_argument('--display', choices=displays, help='The game ui.', default="GUI", type=str)
     parser.add_argument('--agent1', choices=agents, help='The agent.', default='KeyboardAgent', type=str)
-    parser.add_argument('--agent2', choices=agents, help='The agent.', default='MinmaxAgent', type=str)
+    parser.add_argument('--agent2', choices=agents, help='The agent.', default='KeyboardAgent', type=str)
     parser.add_argument('--depth', help='The maximum depth for to search in the game tree.', default=2, type=int)
     parser.add_argument('--sleep_between_actions', help='Should sleep between actions.', default=False, type=bool)
     parser.add_argument('--num_of_games', help='The number of games to run.', default=1, type=int)
@@ -104,12 +105,11 @@ def main():
                         default='better', type=str)
     args = parser.parse_args()
     numpy.random.seed(args.random_seed)
-    # if args.display != displays[0]:
-    #     display = util.lookup('displays.' + args.display, globals())()
-    # else:
-    #     display = None
-    #
-    display = None
+    if args.display != displays[0]:
+        display = SummaryDisplay()
+    else:
+        display = None
+
     if args.agent1 != agents[0]:
         agent1 = create_agent(args.agent1,args.evaluation_function,args.depth)
     else:

@@ -44,18 +44,20 @@ class Game(object):
 
     def _game_loop(self):
         #TODO : connect X button to game.quit()
+        turn = 0
         while not self._state.done and not self._should_quit:
             if self.sleep_between_actions:
                 time.sleep(1)
 
             self.display.mainloop_iteration()
-
-            action = self.agent.get_action(self._state)
-            cor1 = self._state.move(action, 1)
-            self.display.update_state(cor1, 1)
-
+            if turn %2 == 0:
+                action = self.agent.get_action(self._state)
+                cor1 = self._state.move(action, 1)
+                self.display.update_state(self._state, cor1, (turn %2) +1)
+            else:
             # self.display.mainloop_iteration()
-            opponent_action = self.opponent_agent.get_action(self._state)
-            cor2 = self._state.move(opponent_action, 2)
-            self.display.update_state(cor2, 2)
+                opponent_action = self.opponent_agent.get_action(self._state)
+                cor2 = self._state.move(opponent_action, 2)
+                self.display.update_state(self._state, cor2, (turn %2) +1 )
+            turn += 1
         # return self._state.score, self._state.max_tile
