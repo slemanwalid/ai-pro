@@ -18,7 +18,9 @@ class MultiAgentSearchAgent(Agent):
     is another abstract class.
     """
 
-    def __init__(self, evaluation_function, depth=2):
+    def __init__(self, player, evaluation_function, depth=2):
+        super().__init__()
+        self.player = player
         self.evaluation_function = evaluation_function
         self.depth = depth
 

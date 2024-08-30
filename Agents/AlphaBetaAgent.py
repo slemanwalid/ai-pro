@@ -9,13 +9,13 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     def helper(self, game_state, depth, alpha=-float('inf'), beta=float('inf'), turn=0):
         legal_moves = game_state.get_legal_actions(turn % 2)
         if not legal_moves or depth == 0:
-            return self.evaluation_function(game_state), None
+            return self.evaluation_function(game_state, turn + 1), None
 
         if turn % 2 == 0:
             max_score = -float('inf')
             best_action = None
             for action in legal_moves:
-                successor = game_state.generate_successor(turn % 2, action)
+                successor = game_state.generate_successor(action, self.player)
                 score, _ = self.helper(successor, depth - 1, alpha, beta, turn + 1)
                 if score > max_score:
                     max_score = score
@@ -28,7 +28,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             min_score = float('inf')
             best_action = None
             for action in legal_moves:
-                successor = game_state.generate_successor(turn % 2, action)
+                successor = game_state.generate_successor(action, self.player)
                 score, _ = self.helper(successor, depth -1, alpha, beta, turn + 1)
                 if score < min_score:
                     min_score = score

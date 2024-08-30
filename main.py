@@ -11,9 +11,7 @@ from Agents.KeyboardAgent import  KeyboardAgent
 from Agents.ExpictimaxAgent import ExpectimaxAgent
 from Agents.MinmaxAgent import MinmaxAgent
 from  GameRunner import GameRunner
-from Game import Game
-from GameState import GameState
-import Agents
+
 
 
 
@@ -26,13 +24,13 @@ def create_display(display_name):
         return SummaryDisplay()
     raise Exception("Invalid summary display type.")
 
-def create_agent(agent_name, evaluation_function, depth, display):
+def create_agent(agent_name,player , evaluation_function, depth, display):
     if agent_name == "MinmaxAgent":
-        return MinmaxAgent(depth=depth, evaluation_function=Heuristics.evaluation_function)
+        return MinmaxAgent(depth=depth, evaluation_function=Heuristics.evaluation_function, player=player)
     elif agent_name == "ExpictimaxAgent":
-        return ExpectimaxAgent(depth=depth, evaluation_function=Heuristics.evaluation_function)
+        return ExpectimaxAgent(depth=depth, evaluation_function=Heuristics.evaluation_function,player=player)
     elif agent_name == "AlphaBetaAgent":
-        return AlphaBetaAgent(depth=depth, evaluation_function=Heuristics.evaluation_function)
+        return AlphaBetaAgent(depth=depth, evaluation_function=Heuristics.evaluation_function,player=player)
     elif agent_name == "KeyboardAgent":
         return KeyboardAgent(display)
     raise Exception("Invalid agent name.")
@@ -55,8 +53,8 @@ def main():
     args = parser.parse_args()
     numpy.random.seed(args.random_seed)
     display = create_display(args.display)
-    agent1 = create_agent(args.agent1,args.evaluation_function,args.depth,display)
-    agent2 = create_agent(args.agent2,args.evaluation_function,args.depth, display)
+    agent1 = create_agent(args.agent1,1,args.evaluation_function,args.depth,display)
+    agent2 = create_agent(args.agent2,2,args.evaluation_function,args.depth, display)
 
     game_runner = GameRunner(display=display, agent1=agent1,agent2=agent2,
                              sleep_between_actions=args.sleep_between_actions)
