@@ -24,7 +24,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
             total_score = 0
             probability = 1 / len(legal_moves)
             for action in legal_moves:
-                successor = game_state.generate_successor(action, self.player)
+                successor = game_state.generate_successor(action, self.opponent_player)
                 score, _ = self.helper(successor, depth -1, turn + 1)
                 total_score += probability * score
             return total_score, None

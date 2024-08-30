@@ -11,7 +11,7 @@ class MinmaxAgent(MultiAgentSearchAgent):
             max_score = -float('inf')
             best_action = None
             for action in legal_moves:
-                successor = game_state.generate_successor(action, self.player)
+                successor = game_state.generate_successor(action, self.opponent_player)
                 score, _ = self.helper(successor, depth - 1, turn + 1)
                 if score > max_score:
                     max_score = score

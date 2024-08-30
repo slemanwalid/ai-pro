@@ -28,7 +28,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             min_score = float('inf')
             best_action = None
             for action in legal_moves:
-                successor = game_state.generate_successor(action, self.player)
+                successor = game_state.generate_successor(action, self.opponent_player)
                 score, _ = self.helper(successor, depth -1, alpha, beta, turn + 1)
                 if score < min_score:
                     min_score = score

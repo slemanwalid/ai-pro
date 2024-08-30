@@ -21,6 +21,7 @@ class MultiAgentSearchAgent(Agent):
     def __init__(self, player, evaluation_function, depth=2):
         super().__init__()
         self.player = player
+        self.opponent_player = 1 if player == 2 else 2
         self.evaluation_function = evaluation_function
         self.depth = depth
 
