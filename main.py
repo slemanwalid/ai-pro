@@ -26,11 +26,11 @@ def create_display(display_name):
 
 def create_agent(agent_name,player , evaluation_function, depth, display):
     if agent_name == "MinmaxAgent":
-        return MinmaxAgent(depth=depth, evaluation_function=Heuristics.evaluation_function, player=player)
+        return MinmaxAgent(depth=depth, evaluation_function=Heuristics.easy_evaluation_function, player=player)
     elif agent_name == "ExpictimaxAgent":
-        return ExpectimaxAgent(depth=depth, evaluation_function=Heuristics.evaluation_function,player=player)
+        return ExpectimaxAgent(depth=depth, evaluation_function=Heuristics.easy_evaluation_function, player=player)
     elif agent_name == "AlphaBetaAgent":
-        return AlphaBetaAgent(depth=depth, evaluation_function=Heuristics.evaluation_function,player=player)
+        return AlphaBetaAgent(depth=depth, evaluation_function=Heuristics.easy_evaluation_function, player=player)
     elif agent_name == "KeyboardAgent":
         return KeyboardAgent(display)
     raise Exception("Invalid agent name.")

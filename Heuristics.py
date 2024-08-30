@@ -48,8 +48,25 @@ def evaluate_center_control(board, player):
             score -= 3  # Penalize for opponent's control
 
     return score
-
-
+def evaluate_four_connected(game_state, player):
+    """
+    four connected -> inf
+    three connected with open end -> high score
+    two connected with two open ends -> medium score
+    one connected with mulltiple open spaces -> low score
+    :param game_state:
+    :param player:
+    :return:
+    """
+    pass
+def evaluate_opponent_moves(game_state, player):
+    """
+    -1 * evaluate_four_connected(game_state, opponent_player)
+    :param game_state:
+    :param opponent_player:
+    :return:
+    """
+    pass
 def evaluation_function_1(game_state, player):
     """
     Design a better evaluation function here.
@@ -67,4 +84,6 @@ def evaluation_function_1(game_state, player):
     return depth * depth_weight + center_control * center_control_weight
 
 
-evaluation_function = evaluation_function_1
+easy_evaluation_function = evaluation_function_1
+medium_evaluation_function = None
+hard_evaluation_function = None
