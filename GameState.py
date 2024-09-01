@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 DEFAULT_COLUMNS = 7
 DEFAULT_ROWS = 6
@@ -6,25 +7,28 @@ DEFAULT_BOARD_SIZE = 6
 
 
 class GameState:
-    def __init__(self, rows=DEFAULT_ROWS, columns=DEFAULT_COLUMNS, board=None, done=False):
-        self.__player = 0
+    def __init__(self, rows=DEFAULT_ROWS, columns=DEFAULT_COLUMNS, board=None, done=False, last_added = None):
         if board is None:
             board = np.zeros((rows, columns))
         self.__board = board
-        self.__turn = 0
         self.__done = done
         self.__rows = rows
         self.__cols = columns
-        self.__last_added = [rows] * columns
+        if last_added is None:
+            last_added = [rows] * columns
+        self.__last_added = last_added
         self.__winner = 0
         self.__winner_cords = []
+
 
     @property
     def winner_coords(self):
         return self.__winner_cords
+
     @property
     def winner(self):
         return self.__winner
+
     @property
     def is_win(self):
         return self.__winner != 0
@@ -48,7 +52,7 @@ class GameState:
         row = self.__last_added[col] - 1
         # TODO: check invalid human case
         self.__board[row][col] = turn
-        if self.check_win((row, col)):
+        if self.check_win((row, col), turn):
             self.__done = True
             self.__winner = turn
             return row, col
@@ -59,27 +63,43 @@ class GameState:
         return row, col
 
     def generate_successor(self, col, turn):
-        successor = GameState(rows=self.__rows, columns=self.__cols, board=self.__board.copy(),
-                              done=self.__done)
+        new_board = copy.deepcopy(self.__board)
+        last_added = copy.deepcopy(self.__last_added)
+        successor = GameState(last_added= last_added, board= new_board,
+                              rows=self.__rows, columns=self.__cols,done=self.__done)
         successor.move(col, turn)
         return successor
 
-    def check_win(self, cor):
+    def check_win(self, cor, player):
+        #0,0 1,1 2,2, 3,3
         """
         this function checks checks if there are four squares that have the same disc
         :return: True if there are four squares that have the same disc, False if there aren't
         """
         (row, col) = cor
-        directions = [(1, 0), (1, 1), (0, 1), (-1, 0), (-1, -1), (0, -1), (-1, 1), (1, -1)]
+        directions = [(1, 0), (1, 1), (0, 1), (1, -1)]
+        n_rows = self.__board.shape[0]
+        n_cols = self.__board.shape[1]
         for ind1, ind2 in directions:
-            if self.valid_coordinate((row + 3 * ind1, col + 3 * ind2)):
-                if self.__board[row, col] == self.__board[row + ind1, col + ind2] == \
-                        self.__board[row + 2 * ind1, col + 2 * ind2] == self.__board[row + 3 * ind1, col + 3 * ind2]:
-                    self.__winner_cords = [(row, col),
-                                           (row + ind1, col + ind2),
-                                           (row + 2 * ind1, col + 2 * ind2),
-                                           (row + 3 * ind1, col + 3 * ind2)]
-                    return True
+            count = 1
+            i ,j= row + ind1, col + ind2
+            coords = [(row,col)]
+            while 0 <= i < n_rows and 0 <= j < n_cols and self.__board[i][j] == player:
+                count += 1
+                coords.append((i,j))
+                i += ind1
+                j += ind2
+
+            i, j = row - ind1, col - ind2
+            while 0 <= i < n_rows and 0 <= j < n_cols and self.__board[i][j] == player:
+                count += 1
+                coords.append((i,j))
+                i -= ind1
+                j -= ind2
+
+            if count >=4 :
+                self.__winner_cords = coords
+                return True
         return False
 
     def valid_coordinate(self, cor):
