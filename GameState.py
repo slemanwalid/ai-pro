@@ -44,6 +44,10 @@ class GameState:
     @property
     def board(self):
         return self.__board
+    
+    @property
+    def last_added(self):
+        return self.__last_added
 
     def get_legal_actions(self, agent_index):
         return [col for col in range(len(self.__last_added)) if self.__last_added[col] != 0]

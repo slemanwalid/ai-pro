@@ -42,7 +42,7 @@ def main():
     displays = ['GUI', 'SummaryDisplay']
     agents = ['KeyboardAgent', 'ReflexAgent', 'MinmaxAgent', 'AlphaBetaAgent', 'ExpectimaxAgent']
     parser.add_argument('--display', choices=displays, help='The game ui.', default="GUI", type=str)
-    parser.add_argument('--agent1', choices=agents, help='The agent.', default='KeyboardAgent', type=str)
+    parser.add_argument('--agent1', choices=agents, help='The agent.', default='MinmaxAgent', type=str)
     parser.add_argument('--agent2', choices=agents, help='The agent.', default='MinmaxAgent'
                                                                                , type=str)
     parser.add_argument('--depth', help='The maximum depth for to search in the game tree.', default=2, type=int)
